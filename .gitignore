@@ -1,0 +1,57 @@
+# Dependencies
+.bin/
+node_modules/
+frontend/node_modules/
+venv/
+backend/venv/
+.venv/
+env/
+
+# Production builds
+dist/
+frontend/dist/
+build/
+*.egg-info/
+
+# Python cache & tests
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+backend/.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# OS & IDE files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database (keep sample / allow fresh init in prod)
+*.sqlite
+*.sqlite3
+andhra_hyperlocal.db
+backend/andhra_hyperlocal.db
+
+# Vercel & Docker logs
+.vercel
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

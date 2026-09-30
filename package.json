@@ -1,0 +1,17 @@
+{
+  "name": "andhra-pradesh-hyperlocal-advisory",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SIH 2026 — Andhra Pradesh Hyper-Local Business Advisory Engine",
+  "scripts": {
+    "dev": "node run.js",
+    "start": "node run.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && PYTHONPATH=. ./venv/bin/python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "npm --prefix frontend run build",
+    "build:all": "npm --prefix frontend install && npm --prefix frontend run build && pip install -r backend/requirements.txt",
+    "start:prod": "cd backend && PYTHONPATH=. uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}",
+    "tunnel": "./.bin/cloudflared tunnel --url http://localhost:8000",
+    "test": "cd backend && PYTHONPATH=. ./venv/bin/python3 -m pytest"
+  }
+}
