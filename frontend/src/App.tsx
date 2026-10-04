@@ -14,11 +14,11 @@ import { ChartsSection } from './components/Dashboard/ChartsSection';
 import { SwotCard } from './components/Dashboard/SwotCard';
 import { PriceIndicatorsCard } from './components/Dashboard/PriceIndicatorsCard';
 import { DataConfidenceCard } from './components/Dashboard/DataConfidenceCard';
-import { AiAdvisoryCard } from './components/Dashboard/AiAdvisoryCard';
+import { Module1FeasibilityReport } from './components/Dashboard/Module1FeasibilityReport';
+import { Module2FinancialStructuring } from './components/Module2/Module2FinancialStructuring';
 import { ContributeModal } from './components/Dashboard/ContributeModal';
 import { MethodologyModal } from './components/MethodologyModal';
-import { FinancialModule } from './components/Module2/FinancialModule';
-import { ArrowLeft, PlusCircle, CheckCircle2, Sparkles, ShieldCheck, AlertCircle, RefreshCw, Calculator } from 'lucide-react';
+import { ArrowLeft, PlusCircle, CheckCircle2, Sparkles, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   const [language, setLanguage] = useState<Language>('te');
@@ -41,8 +41,6 @@ const AppContent: React.FC = () => {
     analysisError,
     setAnalysisError,
     marginCapital,
-    setMarginCapital,
-    financialRoadmap,
     activeView,
     setActiveView,
     goToFinancialPlanning,
@@ -199,175 +197,33 @@ const AppContent: React.FC = () => {
             )}
 
           </div>
-        ) : activeView === 'module2' ? (
-          /* Module 2: Continuous Financial Structuring */
-          <FinancialModule
-            language={language}
-            marginCapital={marginCapital}
-            onMarginChange={setMarginCapital}
-            businessName={getResultBusinessTitle()}
-            businessKey={businessKey}
-            locationName={locationDisplayName}
-            onBackToModule1={backToModule1}
-          />
         ) : (
-          /* Final Results Dashboard (Module 1) */
-          <div className="space-y-6 animate-in fade-in duration-300">
-            
-            {/* 3D Navigation & Analysis Summary Bar */}
-            <div className="card-3d-surface p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-md">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <button
-                  onClick={resetAll}
-                  className="btn-3d-secondary text-xs sm:text-sm py-2 px-3.5 flex items-center gap-1.5 cursor-pointer"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>{t.modifySearchBtn}</span>
-                </button>
-
-                <button
-                  onClick={goToFinancialPlanning}
-                  className="btn-3d-primary text-xs sm:text-sm py-2 px-4 flex items-center gap-1.5 cursor-pointer shadow-sm"
-                >
-                  <Calculator className="w-4 h-4" />
-                  <span>{t.continueToFinanceBtn}</span>
-                </button>
-              </div>
-
-              {/* Compact Analysis Summary */}
-              <div className="bg-slate-100/90 rounded-xl p-2.5 sm:px-4 sm:py-2 border border-slate-200 flex items-center gap-2 text-xs flex-wrap text-slate-700">
-                <span className="text-3xs font-black uppercase tracking-wider text-slate-500">Analysis Summary:</span>
-                <span className="font-black text-slate-900">{getResultBusinessTitle()}</span>
-                <span className="text-slate-400">•</span>
-                <span className="text-slate-700 font-semibold">{locationDisplayName}</span>
-                <span className="text-slate-400">•</span>
-                <span className="badge-3d px-2 py-0.5 bg-emerald-100 text-emerald-950 font-black border border-emerald-300">
-                  {analysisResult.radius.radius_km} KM
-                </span>
-                <span className="text-slate-400">•</span>
-                <span className="font-medium">Margin: <strong className="text-slate-900">₹{marginCapital.toLocaleString('en-IN')}</strong></span>
-                <span className="text-slate-400">•</span>
-                <span className="font-medium">Project: <strong className="text-slate-900">₹{financialRoadmap.totalProjectCost.toLocaleString('en-IN')}</strong></span>
-                <span className="text-slate-400">•</span>
-                <span className="font-medium text-emerald-800">Max Loan: <strong>₹{financialRoadmap.maximumLoan.toLocaleString('en-IN')}</strong></span>
-              </div>
-            </div>
-
-            {/* 1. Opportunity Score Card */}
-            <OpportunityScoreCard
-              language={language}
-              scoreData={analysisResult.opportunity_score}
-              businessName={getResultBusinessTitle()}
-              locationName={locationDisplayName}
-            />
-
-            {/* 2. Key Metrics Grid */}
-            <KeyMetricsGrid
-              language={language}
-              competitors={analysisResult.competitors}
-              demographics={analysisResult.market_reach}
-              accessibility={analysisResult.accessibility}
-              marketGap={analysisResult.market_gap}
-              localSnapshot={analysisResult.local_snapshot}
-              businessLandscape={analysisResult.business_landscape}
-              dataMode={analysisResult.data_mode}
-            />
-
-            {/* 3. AI Natural Language Audio Advisory */}
-            <AiAdvisoryCard
-              language={language}
-              explanation={analysisResult.ai_explanation}
-            />
-
-            {/* 4. Interactive Map */}
-            <MapSection
-              language={language}
-              location={analysisResult.location}
-              radiusKm={analysisResult.radius.radius_km}
-              competitors={analysisResult.competitors}
-            />
-
-            {/* 5. Empirical Recharts Visualizations */}
-            <ChartsSection
-              language={language}
-              factors={analysisResult.opportunity_score.factors}
-              directCount={analysisResult.competitors.direct_count}
-              indirectCount={analysisResult.competitors.indirect_count}
-              distanceBins={analysisResult.competitors.distance_distribution}
-              threats={analysisResult.threats}
-            />
-
-            {/* 6. SWOT Analysis Card */}
-            <SwotCard
-              language={language}
-              swot={analysisResult.swot}
-              budgetFeasibility={analysisResult.budget_feasibility}
-            />
-
-            {/* 7. Local AP Price Indicators & Valuation Strategy */}
-            <PriceIndicatorsCard
-              language={language}
-              priceIndicators={analysisResult.price_indicators}
-              analysisResult={analysisResult}
-            />
-
-            {/* 8. Data Confidence Indicator */}
-            <DataConfidenceCard
-              language={language}
-              confidence={analysisResult.data_confidence}
-              qualityCoverage={analysisResult.data_quality_coverage}
-              normalizedIndicators={analysisResult.normalized_indicators}
-            />
-
-            {/* 3D Community Contribution Prompt Banner */}
-            <div className="card-dark p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
-              <div>
-                <h4 className="text-base sm:text-lg font-black text-white drop-shadow-xs">
-                  {t.missingBizHeading}
-                </h4>
-                <p className="text-xs sm:text-sm text-slate-200 mt-1 font-medium">
-                  {t.missingBizDesc}
-                </p>
-              </div>
-              <button
-                onClick={() => setShowContributeModal(true)}
-                className="btn-3d-primary text-xs sm:text-sm py-3 px-6 shrink-0 cursor-pointer"
-              >
-                <PlusCircle className="w-4 h-4 mr-2" />
-                <span>{t.suggestBizBtn}</span>
-              </button>
-            </div>
-
-            {/* Seamless Transition Banner to Module 2 */}
-            <div className="card-3d-hero p-6 sm:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-5 shadow-2xl relative overflow-hidden">
-              <div className="relative z-10">
-                <span className="badge-3d px-3 py-1 bg-white/20 text-white text-2xs font-black uppercase tracking-wider">
-                  {t.module2Tag} • SMART FINANCIAL STRUCTURING
-                </span>
-                <h3 className="text-xl sm:text-2xl font-black mt-2 tracking-tight">
-                  {language === 'te'
-                    ? 'వ్యాపార ఆర్థిక ప్రణాళిక మరియు స్కీమ్ ఎంపికకు కొనసాగండి'
-                    : language === 'hi'
-                    ? 'व्यावसायिक वित्तीय योजना और सरकारी योजना चयन पर आगे बढ़ें'
-                    : 'Ready for Financial Structuring & Scheme Routing?'}
-                </h3>
-                <p className="text-xs sm:text-sm text-emerald-100 mt-1 max-w-xl font-medium leading-relaxed">
-                  {language === 'te'
-                    ? 'మీ మార్జిన్ నిధుల ఆధారంగా 10% నిష్పత్తిలో మొత్తం ప్రాజెక్ట్ ఖర్చు, 90% ప్రభుత్వ రుణ సహాయం మరియు తిరిగి చెల్లింపుల రోడ్‌మ్యాప్‌ను పొందండి.'
-                    : language === 'hi'
-                    ? 'अपनी उपलब्ध पूंजी से 10% मार्जिन मॉडल पर कुल परियोजना लागत, 90% संस्थागत ऋण और SIH पुनर्भुगतान अनुसूची देखें।'
-                    : 'Convert your hyper-local feasibility findings into an actionable financial roadmap with 10% margin sizing, 90% loan routing, and quarterly repayment schedule.'}
-                </p>
-              </div>
-              <button
-                onClick={goToFinancialPlanning}
-                className="btn-3d-primary text-sm sm:text-base py-3.5 px-7 shrink-0 flex items-center gap-2 cursor-pointer shadow-xl relative z-10"
-              >
-                <Calculator className="w-5 h-5" />
-                <span>{t.continueToFinanceBtn}</span>
-              </button>
-            </div>
-
+          /* Results Stage: Module 1 (Feasibility) & Module 2 (Financial Structuring) */
+          <div>
+            {/* Active Module View */}
+            {activeView === 'module2' ? (
+              <Module2FinancialStructuring
+                language={language}
+                analysisResult={analysisResult}
+                locationName={locationDisplayName}
+                businessName={getResultBusinessTitle()}
+                radiusKm={analysisResult.radius.radius_km}
+                onBackToModule1={backToModule1}
+                onModifySearch={resetAll}
+              />
+            ) : (
+              <Module1FeasibilityReport
+                language={language}
+                analysisResult={analysisResult}
+                locationName={locationDisplayName}
+                businessName={getResultBusinessTitle()}
+                radiusKm={analysisResult.radius.radius_km}
+                marginCapital={marginCapital}
+                onModifySearch={resetAll}
+                onProceedToModule2={goToFinancialPlanning}
+                onOpenContributeModal={() => setShowContributeModal(true)}
+              />
+            )}
           </div>
         )}
 

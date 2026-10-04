@@ -23,10 +23,12 @@ CATEGORY_KEYWORDS = {
         "खेती", "कृषि", "सब्जी", "फल", "बीज", "उर्वरक", "कीटनाशक"
     ],
     "food_beverages": [
-        "bakery", "cake", "bread", "restaurant", "hotel", "tea", "coffee", "juice", "tiffin",
+        "restaurant", "restaurent", "restuarent", "resturant", "restraunt", "restarant", "restro",
+        "hotel", "hotell", "dhaba", "mess", "biryani", "biriyani", "bhojanam", "canteen", "food",
+        "dining", "meals", "eatery", "bakery", "cake", "bread", "tea", "coffee", "juice", "tiffin",
         "fast food", "catering", "kitchen", "sweet", "mithai", "snacks", "pickle", "pachadi", "spice", "mill", "flour", "rice mill",
-        "బేకరీ", "హోటల్", "టిఫిన్", "టీ", "స్వీట్", "పచ్చళ్ళు", "పిండి గిర్నీ",
-        "बेकरी", "होटल", "चाय", "नाश्ता", "मिठाई", "अचार", "आटा चक्की"
+        "రెస్టారెంట్", "హోటల్", "టిఫిన్", "మెస్", "ధాబా", "బిర్యానీ", "భోజనం", "బేకరీ", "టీ", "స్వీట్", "పచ్చళ్ళు", "పిండి గిర్నీ",
+        "रेस्टोरेंट", "होटल", "ढाबा", "भोजनालय", "मेस", "बेकरी", "चाय", "नाश्ता", "मिठाई", "अचार", "आटा चक्की"
     ],
     "retail": [
         "grocery", "kirana", "supermarket", "clothing", "cloth", "footwear", "shoes", "chappal",
@@ -74,6 +76,28 @@ CATEGORY_KEYWORDS = {
     ]
 }
 
+# Synonyms & phonetic typo alias map to guarantee exact template mapping
+TEMPLATE_ALIASES: Dict[str, list] = {
+    "restaurant": [
+        "restaurant", "restaurent", "restuarent", "resturant", "restraunt", "restarant", "restro",
+        "hotel", "hotell", "mess", "dhaba", "biryani", "biriyani", "bhojanam", "canteen", "kitchen",
+        "eatery", "food_court", "dining", "meals", "diner", "mandhi", "mandi", "bhojanalaya",
+        "రెస్టారెంట్", "హోటల్", "మెస్", "ధాబా", "బిర్యానీ", "భోజనం", "భోజనశాల",
+        "रेस्टोरेंट", "होटल", "ढाबा", "भोजनालय", "मेस"
+    ],
+    "tiffin_centre": ["tiffin", "tiffins", "fast_food", "fast food", "breakfast", "idli", "dosa", "snacks", "టిఫిన్", "టిఫిన్స్", "నాश्తా"],
+    "tea_shop": ["tea", "chai", "coffee", "juice", "beverages", "టీ", "కాఫీ", "జ్యూస్", "చాయ్", "चाय", "कॉफ़ी"],
+    "bakery": ["bakery", "cake", "pastry", "bread", "sweets", "confectionery", "బేకరీ", "స్వీట్స్", "बेकरी", "मिठाई"],
+    "grocery_shop": ["grocery", "kirana", "kiranam", "provisions", "general_store", "general store", "provisional", "కిరాణా", "కిరాణం", "చిల్లర", "किराना"],
+    "supermarket": ["supermarket", "mart", "dmart", "d-mart", "more", "hypermarket", "సూపర్_మార్కెట్"],
+    "fruit_shop": ["fruit", "fruits", "పండ్ల", "పండ్లు", "फल"],
+    "vegetable_shop": ["vegetable", "vegetables", "veggies", "greens", "కూరగాయలు", "సబ్జీ", "सब्जी"],
+    "dairy_farm": ["dairy", "milk", "cattle", "cow", "buffalo", "ghee", "curd", "paneer", "పాడి", "పాలు", "డెయిరీ", "పాల కేంద్రం", "डेयरी", "दूध"],
+    "poultry_farming": ["poultry", "chicken", "broiler", "meat", "egg", "eggs", "కోళ్ల", "చికెన్", "గుడ్లు", "मुर्गी", "अंडा"],
+    "mobile_repair": ["mobile", "cell", "phone", "repair", "screen", "మొబైల్", "రిపేర్", "मोबाइल"],
+    "solar_maintenance": ["solar", "pv", "panel", "cleaning", "సోలార్", "सौर"]
+}
+
 def clean_input_text(text: str) -> str:
     """Normalize input text by lowering and stripping special chars."""
     text = text.lower().strip()
@@ -82,12 +106,12 @@ def clean_input_text(text: str) -> str:
 def classify_business_idea(raw_input: str) -> Tuple[str, str, float]:
     """
     Classifies raw business text into (Category Slug, Standardized Business Name, Confidence Score).
-    Handles Telugu, Hindi, English colloquial phrasing.
+    Handles Telugu, Hindi, English colloquial phrasing and common typing variations.
     """
     cleaned = clean_input_text(raw_input)
     words = [w for w in cleaned.split() if w not in STOPWORDS]
 
-    # Check for direct match in predefined ideas
+    # 1. Check for direct match in predefined ideas
     for cat in BUSINESS_CATEGORIES:
         for idea in cat["ideas"]:
             name_en = idea["name_en"].lower()
@@ -103,7 +127,15 @@ def classify_business_idea(raw_input: str) -> Tuple[str, str, float]:
             if len(overlap) >= 2:
                 return cat["slug"], idea["name_en"], 0.88
 
-    # Keyword scoring across categories
+    # 2. Check alias templates (handles common typos like 'restaurent')
+    for tmpl_key, aliases in TEMPLATE_ALIASES.items():
+        if any(a in cleaned for a in aliases) or any(any(a in w for w in words) for a in aliases):
+            for cat in BUSINESS_CATEGORIES:
+                for idea in cat["ideas"]:
+                    if idea["slug"] == tmpl_key or tmpl_key in idea["slug"]:
+                        return cat["slug"], idea["name_en"], 0.95
+
+    # 3. Keyword scoring across categories
     best_cat = "retail"  # default fallback
     best_score = 0
     total_matches = 0
@@ -127,7 +159,7 @@ def classify_business_idea(raw_input: str) -> Tuple[str, str, float]:
     elif best_score >= 1:
         confidence = 0.70
     else:
-        confidence = 0.50  # Low confidence: trigger confirmation modal
+        confidence = 0.50  # Low confidence
 
     return best_cat, standardized_title, confidence
 
@@ -138,22 +170,6 @@ def get_or_create_business_profile(raw_input: str, category_slug: str = None) ->
     detected_cat, standardized_title, confidence = classify_business_idea(raw_input)
     if category_slug:
         detected_cat = category_slug
-
-    # Synonyms / alias map to ensure exact profile matching
-    TEMPLATE_ALIASES = {
-        "restaurant": ["restaurant", "hotel", "mess", "dhaba", "biryani", "bhojanam", "canteen", "kitchen", "eatery", "food_court", "dining", "రెస్టారెంట్", "హోటల్", "మెస్"],
-        "tiffin_centre": ["tiffin", "fast_food", "breakfast", "idli", "dosa", "snacks", "టిఫిన్"],
-        "tea_shop": ["tea", "coffee", "chai", "juice", "beverages", "టీ", "కాఫీ", "జ్యూస్"],
-        "bakery": ["bakery", "cake", "pastry", "bread", "sweets", "confectionery", "బేకరీ"],
-        "grocery_shop": ["grocery", "kirana", "provisions", "general_store", "కిరాణా"],
-        "supermarket": ["supermarket", "mart", "dmart", "d-mart", "more", "hypermarket", "సూపర్_మార్కెట్"],
-        "fruit_shop": ["fruit", "fruits", "పండ్ల", "పండ్లు"],
-        "vegetable_shop": ["vegetable", "veggies", "greens", "కూరగాయలు"],
-        "dairy_farm": ["dairy", "milk", "cattle", "buffalo", "ghee", "curd", "పాడి", "పాలు", "డెయిరీ"],
-        "poultry_farming": ["poultry", "chicken", "broiler", "meat", "egg", "కోళ్ల", "చికెన్"],
-        "mobile_repair": ["mobile", "cell", "phone", "repair", "screen", "మొబైల్"],
-        "solar_maintenance": ["solar", "pv", "panel", "cleaning", "సోలార్"]
-    }
 
     clean_key = standardized_title.lower().replace(" ", "_")
     input_lower = raw_input.lower()

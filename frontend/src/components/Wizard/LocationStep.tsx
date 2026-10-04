@@ -48,7 +48,6 @@ export const LocationStep: React.FC<LocationStepProps> = ({
 
   // Method 3 (Secondary): Live GPS State
   const [isDetectingGps, setIsDetectingGps] = useState(false);
-  const [detectedGpsLoc, setDetectedGpsLoc] = useState<LocationItem | null>(null);
 
   // Validation / Feedback Messages
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -228,7 +227,6 @@ export const LocationStep: React.FC<LocationStepProps> = ({
     setActiveMethod('live_gps');
     setIsDetectingGps(true);
     setErrorMessage(null);
-    setDetectedGpsLoc(null);
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -270,7 +268,11 @@ export const LocationStep: React.FC<LocationStepProps> = ({
               undetermined_note: loc.undetermined_note
             };
 
-            setDetectedGpsLoc(standardItem);
+            // AUTOMATICALLY SELECT LIVE LOCATION IMMEDIATELY:
+            // No secondary confirmation needed; chooser UI disappears
+            onLocationSelect(standardItem);
+            setActiveMethod(null);
+            setErrorMessage(null);
           }
         } catch (err) {
           setErrorMessage("Network error connecting to AP geocoding service.");
@@ -300,13 +302,19 @@ export const LocationStep: React.FC<LocationStepProps> = ({
     );
   };
 
-  const handleConfirmGpsLocation = () => {
-    if (detectedGpsLoc) {
-      onLocationSelect(detectedGpsLoc);
-      setActiveMethod(null);
-      setDetectedGpsLoc(null);
+  // Automatically detect and select live location if browser permission was already granted
+  useEffect(() => {
+    if (!selectedLocation && typeof navigator !== 'undefined' && navigator.geolocation && 'permissions' in navigator) {
+      navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+        if (status.state === 'granted') {
+          handleStartGps();
+        }
+      }).catch(() => {
+        // Permissions API query not supported or blocked, ignore
+      });
     }
-  };
+  }, []);
+
 
   // =========================================================================
   // RESET / CHANGE LOCATION HANDLER
@@ -315,7 +323,6 @@ export const LocationStep: React.FC<LocationStepProps> = ({
     setSelectedDistrictName('');
     setSelectedMandalName('');
     setSelectedVillageName('');
-    setDetectedGpsLoc(null);
     setSearchQuery('');
     setSearchResults([]);
     setErrorMessage(null);
@@ -340,7 +347,11 @@ export const LocationStep: React.FC<LocationStepProps> = ({
           <div className="pl-1 sm:pl-2">
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-md mb-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>✓ {t.locationSelectedBadge || "Location Selected"}</span>
+              <span>
+                {selectedLocation.source === 'live_gps'
+                  ? (language === 'te' ? '✓ లైవ్ లొకేషన్ ఎంపికైంది' : language === 'hi' ? '✓ लाइव स्थान चुना गया' : '✓ Live Location Selected')
+                  : (t.locationSelectedBadge || "✓ Location Selected")}
+              </span>
             </div>
 
             <div className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
@@ -356,6 +367,17 @@ export const LocationStep: React.FC<LocationStepProps> = ({
             <div className="text-sm font-medium text-slate-500 mt-0.5">
               {districtName} District, Andhra Pradesh
             </div>
+
+            {selectedLocation.latitude && selectedLocation.longitude && (
+              <div className="text-xs font-mono text-emerald-700 font-semibold mt-1 flex items-center gap-1.5">
+                <span>📍 {selectedLocation.latitude.toFixed(4)}, {selectedLocation.longitude.toFixed(4)}</span>
+                {selectedLocation.source === 'live_gps' && (
+                  <span className="text-3xs bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-sans font-bold">
+                    GPS Live
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           <button
@@ -478,20 +500,24 @@ export const LocationStep: React.FC<LocationStepProps> = ({
         </button>
       </div>
 
-      {/* 3. Small Secondary Action: Live Location Shortcut */}
+      {/* 3. Live Location Shortcut */}
       <div className="mt-3.5 flex items-center justify-center">
         <button
           type="button"
           onClick={handleStartGps}
           disabled={isDetectingGps}
-          className="text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors inline-flex items-center gap-2 cursor-pointer py-1 px-3 rounded-lg hover:bg-emerald-50/70 disabled:opacity-50"
+          className="text-sm font-bold text-emerald-700 hover:text-emerald-800 transition-colors inline-flex items-center gap-2 cursor-pointer py-1.5 px-4 rounded-xl hover:bg-emerald-50/90 border border-emerald-300/80 bg-emerald-50/40 shadow-2xs disabled:opacity-60"
         >
           {isDetectingGps ? (
             <Loader2 className="w-[18px] h-[18px] animate-spin text-emerald-600" />
           ) : (
             <Navigation className="w-[18px] h-[18px] text-emerald-600" />
           )}
-          <span>{t.useMyCurrentLocation || "Use my current location"}</span>
+          <span>
+            {isDetectingGps
+              ? (language === 'te' ? "లైవ్ లొకేషన్ గుర్తిస్తున్నాము..." : language === 'hi' ? "लाइव स्थान खोज रहे हैं..." : "Detecting live location...")
+              : (t.useMyCurrentLocation || "Use my current location")}
+          </span>
         </button>
       </div>
 
@@ -620,42 +646,19 @@ export const LocationStep: React.FC<LocationStepProps> = ({
         </div>
       )}
 
-      {/* METHOD 3 CONTENT: LIVE GPS DETECTION RESULTS */}
-      {activeMethod === 'live_gps' && (
-        <div className="mt-4 p-4 sm:p-5 bg-slate-50/90 rounded-xl border border-slate-200 animate-in fade-in duration-200">
-          {isDetectingGps && (
-            <div className="flex items-center gap-3 text-emerald-800 font-semibold text-sm py-2">
-              <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />
-              <span>{language === 'te' ? "మీ లొకేషన్‌ను గుర్తిస్తున్నాము..." : language === 'hi' ? "आपका स्थान खोज रहे हैं..." : "Detecting your location..."}</span>
-            </div>
-          )}
-
-          {!isDetectingGps && detectedGpsLoc && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-1.5 text-emerald-800 font-semibold text-xs uppercase tracking-wide">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>✓ {t.locationDetected || "Location detected"}</span>
-              </div>
-
-              <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-emerald-200 shadow-2xs">
-                <div className="text-base font-bold text-slate-900 leading-snug">
-                  {detectedGpsLoc.village_or_town ? `${detectedGpsLoc.village_or_town}, ${detectedGpsLoc.mandal} Mandal` : (detectedGpsLoc.mandal ? `${detectedGpsLoc.mandal} Mandal` : detectedGpsLoc.district)}
-                </div>
-                <div className="text-xs font-semibold text-slate-700 mt-0.5">
-                  {detectedGpsLoc.district} District, Andhra Pradesh
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleConfirmGpsLocation}
-                className="btn-3d-primary h-11 px-5 text-sm font-semibold cursor-pointer inline-flex items-center gap-2"
-              >
-                <span>{t.useThisLocation || "Use This Location"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+      {/* METHOD 3 CONTENT: LIVE GPS DETECTION */}
+      {activeMethod === 'live_gps' && isDetectingGps && (
+        <div className="mt-4 p-4 sm:p-5 bg-emerald-50/70 rounded-xl border border-emerald-200 animate-in fade-in duration-200">
+          <div className="flex items-center gap-3 text-emerald-900 font-semibold text-sm py-1">
+            <Loader2 className="w-5 h-5 animate-spin text-emerald-600 shrink-0" />
+            <span>
+              {language === 'te'
+                ? "మీ లైవ్ లొకేషన్‌ను గుర్తించి స్వయంచాలకంగా ఎంచుకుంటున్నాము..."
+                : language === 'hi'
+                ? "आपका लाइव स्थान खोजकर स्वतः चुन रहे हैं..."
+                : "Detecting and automatically selecting your live location..."}
+            </span>
+          </div>
         </div>
       )}
 

@@ -134,6 +134,9 @@ export interface ThreatItem {
   level: 'High' | 'Medium' | 'Low';
   category: string;
   reason: string;
+  data_backed?: boolean;
+  data_source?: string;
+  metric_label?: string;
 }
 
 export interface SwotMatrix {
@@ -387,6 +390,15 @@ export interface BusinessLandscape {
   };
 }
 
+export interface SuggestedPriceValuation {
+  item: string;
+  suggested_range?: string | null;
+  calculation_methodology?: string | null;
+  basis_source?: string | null;
+  is_calculable: boolean;
+  unavailable_reason?: string | null;
+}
+
 export interface AnalysisResponse {
   analysis_id: number;
   data_mode?: string;
@@ -410,6 +422,7 @@ export interface AnalysisResponse {
   accessibility: AccessibilityStats;
   market_gap: MarketGapStats;
   price_indicators: PriceIndicatorItem[];
+  suggested_price_valuation?: SuggestedPriceValuation;
   operating_cost_indicators?: OperatingCostIndicators;
   business_landscape?: BusinessLandscape;
   local_snapshot?: CensusBaseline;

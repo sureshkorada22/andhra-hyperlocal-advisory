@@ -11,7 +11,7 @@ export const translations = {
     langEnglish: "English",
 
     // Banner & Hero
-    heroTag: "SIH 2026 • మాడ్యూల్ 1",
+    heroTag: "SIH 2026 • ఆంధ్రప్రదేశ్ ప్రత్యేకం",
     heroTitle: "మీ స్థానిక ప్రాంతంలో వ్యాపార సాధ్యతను అంచనా వేయండి",
     heroSubtitle: "గ్రామ, మండల మరియు పట్టణ స్థాయి వాస్తవ డేటా (ఓపెన్ డేటా, జనగణన, మార్కెట్ ధరలు) ఆధారంగా సమగ్ర విశ్లేషణ.",
     heroFeature1: "డేటా ఆధారిత విశ్లేషణ",
@@ -272,18 +272,18 @@ export const translations = {
     closeBtn: "పూర్తయింది (Close)",
 
     // Footer
-    footerTitle: "SIH 2026 — మాడ్యూల్ 1: గ్రామీణ మైక్రో-ఎంట్రప్రెన్యూర్ల కోసం AI వ్యాపార సలహాదారు",
+    footerTitle: "SIH 2026 — గ్రామీణ మైక్రో-ఎంట్రప్రెన్యూర్ల కోసం AI వ్యాపార సలహాదారు మరియు ఆర్థిక ప్రణాళిక",
     footerGeo: "భౌగోళిక పరిధి: ఆంధ్రప్రదేశ్ రాష్ట్రం మాత్రమే (Andhra Pradesh, India ONLY)",
 
-    // Module 2 — Smart Financial Calculator & Scheme Router (SIH26091)
+    // Smart Financial Structuring & Scheme Router (SIH26091)
     continueToFinanceBtn: "ఫైనాన్షియల్ ప్లానింగ్ కి కొనసాగండి →",
-    backToModule1Btn: "← మాడ్యూల్ 1 కు తిరిగి వెళ్లండి",
-    module2Tag: "SIH 2026 • మాడ్యూల్ 2",
-    module2HeroTitle: "స్మార్ట్ ఫైనాన్షియల్ కాలిక్యులేటర్ & స్కీమ్ రౌటర్",
+    backToModule1Btn: "← సాధ్యత విశ్లేషణకు తిరిగి వెళ్లండి",
+    module2Tag: "SIH 2026 • ఆర్థిక ప్రణాళిక",
+    module2HeroTitle: "స్మార్ట్ ఫైనాన్షియల్ స్ట్రక్చరింగ్ & స్కీమ్ రౌటర్",
     module2HeroSubtitle: "అందుబాటులో ఉన్న మార్జిన్ మూలధనం (10%) ఆధారంగా మొత్తం ప్రాజెక్ట్ వ్యయం, 90% సంస్థాగత రుణం మరియు ఆటోమేటిక్ స్కీమ్ ఎంపిక.",
     progStep1: "1. వ్యాపారం & స్థానం",
-    progStep2: "2. స్థానిక సాధ్యత (M1)",
-    progStep3: "3. ఫైనాన్షియల్ ప్లానింగ్ (M2)",
+    progStep2: "2. స్థానిక సాధ్యత",
+    progStep3: "3. ఆర్థిక ప్రణాళిక",
     progStep4: "4. ఫైనాన్షియల్ రోడ్‌మ్యాప్",
     marginQuestion: "మీ స్వంత నిధుల నుండి మీరు ఎంత పెట్టుబడి పెట్టగలరు?",
     marginExplanation: "ఇది మీ అందుబాటులో ఉన్న మార్జిన్ కంట్రిబ్యూషన్. SIH ఫైనాన్షియల్ మోడల్ ప్రకారం, ఇది మొత్తం ప్రాజెక్ట్ వ్యయంలో సుమారు 10% గా పరిగణించబడుతుంది.",
@@ -371,7 +371,7 @@ export const translations = {
     langEnglish: "English",
 
     // Banner & Hero
-    heroTag: "SIH 2026 • मॉड्यूल 1",
+    heroTag: "SIH 2026 • केवल आंध्र प्रदेश",
     heroTitle: "अपने स्थानीय क्षेत्र में व्यावसायिक व्यवहार्यता का आकलन करें",
     heroSubtitle: "गांव, मंडल और शहर स्तर के वास्तविक डेटा (ओपन डेटा, जनगणना, बाजार दरें) पर आधारित सटीक विश्लेषण।",
     heroFeature1: "डेटा-आधारित विश्लेषण",
@@ -632,18 +632,18 @@ export const translations = {
     closeBtn: "बंद करें (Close)",
 
     // Footer
-    footerTitle: "SIH 2026 — मॉड्यूल 1: ग्रामीण सूक्ष्म उद्यमियों के लिए एआई व्यवसाय सलाहकार",
+    footerTitle: "SIH 2026 — ग्रामीण सूक्ष्म उद्यमियों के लिए एआई व्यवसाय सलाहकार और वित्तीय संरचना",
     footerGeo: "भौगोलिक दायरा: केवल आंध्र प्रदेश राज्य (Andhra Pradesh, India ONLY)",
 
-    // Module 2 — Smart Financial Calculator & Scheme Router (SIH26091)
+    // Smart Financial Structuring & Scheme Router (SIH26091)
     continueToFinanceBtn: "वित्तीय योजना पर आगे बढ़ें →",
-    backToModule1Btn: "← मॉड्यूल 1 पर वापस जाएं",
-    module2Tag: "SIH 2026 • मॉड्यूल 2",
-    module2HeroTitle: "स्मार्ट वित्तीय कैलकुलेटर और योजना चयनकर्ता",
+    backToModule1Btn: "← व्यवहार्यता विश्लेषण पर वापस जाएं",
+    module2Tag: "SIH 2026 • वित्तीय संरचना",
+    module2HeroTitle: "स्मार्ट वित्तीय संरचना और योजना चयनकर्ता",
     module2HeroSubtitle: "उपलब्ध मार्जिन पूंजी (10%) के आधार पर कुल परियोजना लागत, 90% संस्थागत ऋण और स्वचालित सरकारी योजना का चयन।",
     progStep1: "1. व्यवसाय और स्थान",
-    progStep2: "2. स्थानीय व्यवहार्यता (M1)",
-    progStep3: "3. वित्तीय योजना (M2)",
+    progStep2: "2. स्थानीय व्यवहार्यता",
+    progStep3: "3. वित्तीय योजना",
     progStep4: "4. वित्तीय रोडमैप",
     marginQuestion: "आप अपने स्वयं के फंड से कितना योगदान दे सकते हैं?",
     marginExplanation: "यह आपका उपलब्ध मार्जिन योगदान है। SIH वित्तीय मॉडल के तहत, इसे परियोजना लागत का लगभग 10% माना जाता है।",
@@ -731,7 +731,7 @@ export const translations = {
     langEnglish: "English",
 
     // Banner & Hero
-    heroTag: "SIH 2026 • MODULE 1",
+    heroTag: "SIH 2026 • Andhra Pradesh Only",
     heroTitle: "Assess Business Feasibility in Your Local Area",
     heroSubtitle: "Comprehensive feasibility analysis driven by real village, mandal, and district level data (OpenStreetMap, AP DES Census, and Mandi Prices).",
     heroFeature1: "Data-Backed Analysis",
@@ -838,7 +838,7 @@ export const translations = {
 
     // Step 3: Capital
     capitalQuestion: "How much can you invest initially?",
-    capitalSubtitle: "This helps evaluate your business feasibility and initial scale within your available budget. (Module 1 feasibility analysis — no loans or EMIs).",
+    capitalSubtitle: "This helps evaluate your business feasibility and initial scale within your available budget (budget-aware feasibility analysis).",
     capital50kLabel: "Micro / Small Scale",
     capital50kDesc: "Lean entry, low fixed overhead",
     capital100kLabel: "Standard / Recommended",
@@ -846,7 +846,7 @@ export const translations = {
     capital200kLabel: "Growth / Commercial",
     capital200kDesc: "Commercial equipment & bulk procurement",
     customCapitalBtn: "+ Custom Budget",
-    capitalScopeNotice: "Module 1 only: Budget-aware feasibility. No loans or EMIs.",
+    capitalScopeNotice: "Budget-aware feasibility analysis for local enterprise sizing.",
     recommendedBadge: "Recommended",
 
     // Step 4: Radius
@@ -992,19 +992,19 @@ export const translations = {
     closeBtn: "Close",
 
     // Footer
-    footerTitle: "SIH 2026 — Module 1: AI-Driven Hyper-Local Business Advisory for Rural Micro-Entrepreneurs",
+    footerTitle: "SIH 2026 — AI-Driven Hyper-Local Business Advisory & Financial Structuring for Rural Micro-Entrepreneurs",
     footerGeo: "Geographic Scope: Andhra Pradesh, India ONLY",
 
-    // Module 2 — Smart Financial Calculator & Scheme Router (SIH26091)
+    // Smart Financial Structuring & Scheme Router (SIH26091)
     continueToFinanceBtn: "Continue to Financial Planning →",
-    backToModule1Btn: "← Back to Module 1 (Feasibility Analysis)",
-    module2Tag: "SIH 2026 • Module 2",
-    module2HeroTitle: "Smart Financial Calculator & Scheme Router",
+    backToModule1Btn: "← Back to Feasibility Analysis",
+    module2Tag: "SIH 2026 • Financial Structuring",
+    module2HeroTitle: "Smart Financial Structuring & Scheme Router",
     module2HeroSubtitle: "Automatically compute feasible project cost from your 10% margin contribution, calculate 90% institutional loan, and route to applicable SIH government schemes.",
     progStep1: "1. Business & Location",
-    progStep2: "2. Local Feasibility (M1)",
-    progStep3: "3. Financial Planning (M2)",
-    progStep4: "4. Financial Roadmap",
+    progStep2: "2. Local Feasibility",
+    progStep3: "3. Financial Structuring",
+    progStep4: "4. Repayment Roadmap",
     marginQuestion: "How much can you contribute from your own funds?",
     marginExplanation: "This is your available margin contribution. Under the SIH financial model, this is treated as approximately 10% of the project cost.",
     marginTooltip: "Your margin contribution is used to estimate the feasible project cost and corresponding loan requirement.",

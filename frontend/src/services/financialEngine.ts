@@ -51,8 +51,8 @@ export const SCHEME_CONFIG: Record<'MICRO_FINANCE' | 'TERM_LOAN', SchemeDefiniti
     projectCostMax: 5000000, // Above ₹1.40 lakh to ₹50 lakh
     loanPercentage: 0.90, // Up to 90% of project cost
     maxLoan: 4500000, // ₹45 lakh
-    interestRate: 0.08, // 8% p.a.
-    tenureYears: 7, // 7 years
+    interestRate: 0.065, // 6.5% p.a. (SIH concessional interest rate)
+    tenureYears: 5, // 5 years
     moratoriumMonths: 6, // 6 months
     rangeLabel: 'Above ₹1.40 Lakh to ₹50 Lakh',
     loanSupportLabel: 'Up to 90%',
@@ -310,11 +310,12 @@ export function generateRepaymentSchedule(
   const schedule: RepaymentScheduleItem[] = [];
   let balance = loanAmount;
 
-  // 1. Moratorium Grace Periods (No principal repayment due)
+  // 1. Moratorium Grace Periods (Principal repayment deferred; interest servicing)
   for (let m = 1; m <= periodsInMoratorium; m++) {
     const qNum = m;
     const label = `${periodLabel} ${m} (Moratorium)`;
     const roundedBal = Math.round(balance * 100) / 100;
+    const interestAccrued = Math.round(balance * r * 100) / 100;
     schedule.push({
       quarter: qNum,
       quarterLabel: label,
@@ -323,15 +324,15 @@ export function generateRepaymentSchedule(
       isMoratorium: true,
       openingPrincipal: roundedBal,
       principalRepaid: 0,
-      interest: 0,
-      totalRepayment: 0,
+      interest: interestAccrued,
+      totalRepayment: interestAccrued,
       closingPrincipal: roundedBal,
       openingBalance: roundedBal,
-      repaymentAmount: 0,
+      repaymentAmount: interestAccrued,
       principalComponent: 0,
-      interestComponent: 0,
+      interestComponent: interestAccrued,
       closingBalance: roundedBal,
-      notes: 'Moratorium grace period — no regular principal repayment due.'
+      notes: 'Moratorium grace period — principal deferred; simple interest serviced.'
     });
   }
 

@@ -36,11 +36,18 @@ backend.on('error', (err) => {
 });
 
 // 2. Spawn React + Vite Frontend
-const frontend = spawn('npm', ['run', 'dev'], {
-  cwd: frontendDir,
-  stdio: 'inherit',
-  shell: true
-});
+const viteBin = path.join(frontendDir, 'node_modules', 'vite', 'bin', 'vite.js');
+const frontend = fs.existsSync(viteBin)
+  ? spawn(process.execPath, [viteBin], {
+      cwd: frontendDir,
+      stdio: 'inherit',
+      shell: false
+    })
+  : spawn('npm', ['run', 'dev'], {
+      cwd: frontendDir,
+      stdio: 'inherit',
+      shell: true
+    });
 
 frontend.on('error', (err) => {
   console.error('\x1b[31m[Frontend Error]:\x1b[0m', err.message);

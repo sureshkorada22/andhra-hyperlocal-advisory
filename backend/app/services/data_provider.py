@@ -113,12 +113,13 @@ async def collect_and_normalize_businesses(
     Deduplicates across sources (entity resolution).
     Returns (direct_competitors, indirect_competitors, supporting_facilities).
     """
-    # 1. Search tags for OSM Overpass
+    # 1. Search tags for OSM Overpass / Nominatim
     search_tags = profile.get("direct_osm_tags", []) + profile.get("indirect_osm_tags", [])
     if not search_tags:
         search_tags = ["shop=convenience", "amenity=marketplace"]
 
-    osm_pois = await fetch_osm_pois(lat, lon, radius_km, search_tags)
+    keywords = profile.get("competitor_keywords", []) + profile.get("search_keywords", [])
+    osm_pois = await fetch_osm_pois(lat, lon, radius_km, search_tags, keywords=keywords)
 
     # 2. Fetch community submissions from local DB within radius
     db_submissions = []

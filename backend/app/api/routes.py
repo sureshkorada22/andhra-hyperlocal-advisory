@@ -205,24 +205,7 @@ async def perform_analysis(req: AnalyzeRequest, db: Session = Depends(get_db)):
     cat_slug = biz.get("category_slug", "retail")
     lang = req.language if req.language in ["te", "hi", "en"] else "te"
 
-    cache_key = f"{round(lat, 4)}_{round(lon, 4)}_{round(radius_km, 1)}_{cat_slug}_{biz_name}_{round(margin_capital, 0)}"
-    if cache_key in ANALYSIS_CACHE:
-        cached = dict(ANALYSIS_CACHE[cache_key])
-        # Update language explanation if switched
-        cached["ai_explanation"] = generate_ai_explanation(
-            business_name=biz_name,
-            location_name=loc.get("village_or_town") or loc.get("resolved_name", "Andhra Pradesh"),
-            radius_km=radius_km,
-            opportunity_score=cached["opportunity_score"]["opportunity_score"],
-            opportunity_label=cached["opportunity_score"]["opportunity_label"],
-            market_gap=cached["market_gap"]["market_gap_level"],
-            direct_count=cached["competitors"]["direct_count"],
-            indirect_count=cached["competitors"]["indirect_count"],
-            households=cached["market_reach"]["estimated_households"],
-            accessibility_score=cached["accessibility"]["accessibility_score"],
-            language=lang
-        )
-        return cached
+
 
     # Fetch Demographics, POIs, Accessibility, and Weather CONCURRENTLY for sub-second/fast response
     district = loc.get("district")
@@ -572,6 +555,7 @@ async def perform_analysis(req: AnalyzeRequest, db: Session = Depends(get_db)):
         "accessibility": accessibility_stats,
         "market_gap": market_gap_stats,
         "price_indicators": ap_sector.get("price_indicators", []),
+        "suggested_price_valuation": ap_sector.get("suggested_price_valuation"),
         "operating_cost_indicators": operating_costs,
         "business_landscape": biz_landscape,
         "local_snapshot": local_snapshot,
@@ -598,8 +582,6 @@ async def perform_analysis(req: AnalyzeRequest, db: Session = Depends(get_db)):
         "data_sources": get_central_data_sources()
     }
 
-    # Save to memory cache
-    ANALYSIS_CACHE[cache_key] = response_payload
 
     # Optional background database persistence
     try:

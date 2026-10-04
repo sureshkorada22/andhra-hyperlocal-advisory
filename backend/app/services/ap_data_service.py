@@ -16,7 +16,7 @@ from typing import Dict, Any, List, Optional
 from app.data.ap_govt_statistics import get_ap_govt_district
 from app.data.ap_economic_census import get_ap_economic_census
 from app.data.ap_msme_udyam import get_ap_msme_data
-from app.data.ap_prices_wages import get_ap_district_wages
+from app.data.ap_prices_wages import get_ap_district_wages, get_ap_category_prices, calculate_suggested_price_range
 
 logger = logging.getLogger(__name__)
 
@@ -35,29 +35,17 @@ def get_ap_sector_indicators(
     wage_profile = get_ap_district_wages(district)
 
     is_dairy = category_slug == "dairy_livestock"
-    is_agri = category_slug == "agriculture_farming"
+    is_agri = category_slug == "agriculture_farming" or "organic" in (business_name or "").lower() or "farm" in (business_name or "").lower()
     is_food = category_slug in ["food_beverages", "retail"]
     is_services = category_slug in ["services", "digital_services", "education"]
     is_manufacturing = category_slug in ["manufacturing", "environment_sustainability"]
     is_fisheries = category_slug in ["dairy_livestock", "agriculture_farming"] and district_profile.get("fisheries", {}).get("aquaculture_area_ha", 0) > 1000
 
-    # 1. Price Indicators (strictly designated as 'Observed price')
-    prices = list(district_profile.get("prices", []))
+    # 1. Price Indicators (tailored to business category and strictly designated as 'Observed price')
+    prices = get_ap_category_prices(district, category_slug, business_name)
     for p in prices:
         p["indicator_type"] = "Observed price"
         p["badge"] = "Official data"
-
-    if is_services or category_slug == "retail" or is_manufacturing:
-        prices.append({
-            "item": "Commercial Power Tariff (LT Category-II Micro-Unit)",
-            "price": "₹6.80 - ₹7.50 per Unit",
-            "source": "APSPDCL / APEPDCL Commercial Tariff Schedule",
-            "year": "2024-25",
-            "geographic_level": "State / Distribution Company",
-            "status": "Verified / Observed",
-            "indicator_type": "Observed price",
-            "badge": "Official data"
-        })
 
     # 2. Operating Cost Reference Wages (DES AP, 2023-24)
     operating_costs = {
@@ -130,6 +118,8 @@ def get_ap_sector_indicators(
         "apmc_market_yards": district_profile.get("apmc_market_yards", [])
     }
 
+    suggested_price_valuation = calculate_suggested_price_range(category_slug, business_name, district, prices)
+
     # Assemble comprehensive sector indicators payload
     sector_data: Dict[str, Any] = {
         "district": district_profile.get("district", district),
@@ -138,6 +128,7 @@ def get_ap_sector_indicators(
         "geographic_level": district_profile.get("geographic_level", "District Level"),
         "badge": "Official data",
         "price_indicators": prices,
+        "suggested_price_valuation": suggested_price_valuation,
         "operating_cost_indicators": operating_costs,
         "business_landscape": business_landscape,
         "infrastructure": infrastructure_data,

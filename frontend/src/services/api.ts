@@ -24,10 +24,6 @@ const getApiBase = (): string => {
 const client = axios.create({
   baseURL: getApiBase(),
   timeout: 60000,
-  headers: {
-    'Bypass-Tunnel-Reminder': 'true',
-    'ngrok-skip-browser-warning': 'true',
-  },
 });
 
 export const apiService = {
